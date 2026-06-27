@@ -1,0 +1,271 @@
+/* ===== Layout ===== */
+.app-header {
+  background: #3b5998;
+  color: #fff;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+}
+
+.page {
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Card ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.09);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 18px;
+}
+
+.card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+/* ===== Form fields ===== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+input[type='text'],
+input[type='number'],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #3b5998;
+}
+
+.row-input {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.row-input input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Buttons ===== */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #3b5998;
+  color: #fff;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+.btn-primary:hover:not(:disabled) { background: #2d4576; }
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+.btn-secondary:hover:not(:disabled) { background: #e0e0e0; }
+
+.btn-success {
+  background: #27ae60;
+  color: #fff;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+.btn-success:hover:not(:disabled) { background: #219a52; }
+
+.btn-danger {
+  background: none;
+  color: #aaa;
+  padding: 0 4px;
+  font-size: 1rem;
+  line-height: 1;
+}
+.btn-danger:hover:not(:disabled) { color: #e74c3c; }
+
+/* ===== Tags (member chips) ===== */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8edf8;
+  color: #3b5998;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ===== Exclusion list ===== */
+.exclusion-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.exclusion-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+
+.exclusion-list .excl-desc { flex: 1; }
+.exclusion-list .excl-amount { font-weight: 700; color: #e67e22; }
+
+/* ===== Net amount display ===== */
+.net-amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  margin-bottom: 4px;
+}
+
+.net-amount-row .label { font-size: 0.85rem; color: #666; }
+.net-amount-row .value { font-size: 1.1rem; font-weight: 700; color: #3b5998; }
+
+/* ===== Payment list ===== */
+.payment-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.payment-list li {
+  background: #f7f8fb;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.payment-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.payment-desc { font-weight: 600; font-size: 0.95rem; }
+.payment-amount { font-weight: 700; color: #3b5998; flex-shrink: 0; }
+.payment-payer { font-size: 0.8rem; color: #999; }
+.payment-excl { font-size: 0.78rem; color: #bbb; display: block; margin-top: 2px; }
+
+/* ===== Settlement results ===== */
+.settlement-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.settlement-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+}
+
+.settle-arrow { color: #bbb; }
+.settle-amount { margin-left: auto; font-size: 1.05rem; font-weight: 700; color: #e67e22; }
+.settle-done { color: #27ae60; font-weight: 600; padding: 10px 0; }
+
+/* ===== Summary ===== */
+.summary-row {
+  font-size: 0.88rem;
+  color: #777;
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+
+/* ===== Actions row ===== */
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+.card-actions button { flex: 1; }
+
+/* ===== Error ===== */
+.error { color: #e74c3c; font-size: 0.88rem; margin: 6px 0; }

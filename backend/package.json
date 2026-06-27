@@ -1,0 +1,18 @@
+{
+  "name": "warikan-backend",
+  "version": "1.0.0",
+  "description": "Warikan app backend - AWS Lambda + TypeScript",
+  "scripts": {
+    "build": "esbuild src/handlers/createGroup.ts src/handlers/getGroup.ts src/handlers/addPayment.ts src/handlers/updatePayment.ts src/handlers/settle.ts --bundle --platform=node --target=node20 --outdir=dist --external:@aws-sdk/*",
+    "build:watch": "npm run build -- --watch",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.6.0"
+  }
+}

@@ -1,0 +1,257 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Warikan App - Bill Splitting Application
+
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Default: "*"
+    Description: "CORS allowed origin (例: https://your-app.vercel.app)"
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        GROUPS_TABLE: !Ref GroupsTable
+        PAYMENTS_TABLE: !Ref PaymentsTable
+        PAYMENTS_GSI: groupId-index
+        ALLOWED_ORIGIN: !Ref AllowedOrigin
+
+Resources:
+  # ─── API Gateway (HTTP API) ────────────────────────────────────────────
+  WarikanApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "http://localhost:5173"
+          - "http://localhost:5174"
+          - !Ref AllowedOrigin
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+        MaxAge: 86400
+
+  # ─── DynamoDB ──────────────────────────────────────────────────────────
+  GroupsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "${AWS::StackName}-groups"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: groupId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: groupId
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  PaymentsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "${AWS::StackName}-payments"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: paymentId
+          AttributeType: S
+        - AttributeName: groupId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: paymentId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: groupId-index
+          KeySchema:
+            - AttributeName: groupId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  # ─── Lambda Functions ──────────────────────────────────────────────────
+  CreateGroupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/createGroup.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GroupsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/createGroup.ts
+        External:
+          - "@aws-sdk/*"
+
+  GetGroupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/getGroup.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref GroupsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref PaymentsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups/{id}
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/getGroup.ts
+        External:
+          - "@aws-sdk/*"
+
+  AddPaymentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/addPayment.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref GroupsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PaymentsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups/{id}/payments
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/addPayment.ts
+        External:
+          - "@aws-sdk/*"
+
+  UpdatePaymentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/updatePayment.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref GroupsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PaymentsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups/{id}/payments/{paymentId}
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/updatePayment.ts
+        External:
+          - "@aws-sdk/*"
+
+  SettleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/settle.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GroupsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref PaymentsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups/{id}/settle
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/settle.ts
+        External:
+          - "@aws-sdk/*"
+
+  DeletePaymentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/deletePayment.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PaymentsTable
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref WarikanApi
+            Path: /groups/{id}/payments/{paymentId}
+            Method: DELETE
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: ES2022
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/deletePayment.ts
+        External:
+          - "@aws-sdk/*"
+
+# ─── Outputs ────────────────────────────────────────────────────────────
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL (VITE_API_URL に設定)
+    Value: !Sub "https://${WarikanApi}.execute-api.${AWS::Region}.amazonaws.com"
+  GroupsTableName:
+    Value: !Ref GroupsTable
+  PaymentsTableName:
+    Value: !Ref PaymentsTable
