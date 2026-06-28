@@ -13,6 +13,7 @@ export default function Result() {
   const [loading, setLoading] = useState(true);
   const [settling, setSettling] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -40,8 +41,6 @@ export default function Result() {
   if (loading) return <Layout><div className="page"><p>読み込み中...</p></div></Layout>;
   if (error && !group) return <Layout><div className="page"><p className="error">{error}</p></div></Layout>;
   if (!group) return <Layout><div className="page"><p className="error">グループが見つかりません</p></div></Layout>;
-
-  const [copied, setCopied] = useState(false);
 
   const memberName = (mid: string) => group.members.find((m) => m.id === mid)?.name ?? mid;
   const totalNet = group.payments.reduce((sum, p) => sum + p.netAmount, 0);
