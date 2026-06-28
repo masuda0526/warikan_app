@@ -13,4 +13,4 @@ parallel = true
 capabilities      = "CAPABILITY_IAM"
 confirm_changeset = false
 resolve_s3        = true
-parameter_overrides = "AllowedOrigin=*"
+parameter_overrides = "AllowedOrigin=https://warikan-masu.vercel.app"
