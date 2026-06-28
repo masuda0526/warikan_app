@@ -22,6 +22,7 @@ export default function RegistPayment() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -102,12 +103,24 @@ export default function RegistPayment() {
 
   const memberName = (mid: string) => group.members.find((m) => m.id === mid)?.name ?? mid;
 
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <Layout>
       <div className="page">
         {/* 支払い入力フォーム */}
         <div className="card">
-          <h2>{group.name} — 支払いを追加</h2>
+          <div className="card-title-row">
+            <h2>{group.name} — 支払いを追加</h2>
+            <button type="button" className="btn-copy" onClick={copyLink}>
+              {copied ? 'コピーしました！' : 'リンクをコピー'}
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit}>
             <div className="field">

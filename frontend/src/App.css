@@ -267,5 +267,41 @@ button:disabled {
 }
 .card-actions button { flex: 1; }
 
+/* ===== Card title with action ===== */
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.card-title-row h2 {
+  margin-bottom: 0;
+}
+
+.btn-copy {
+  background: #e8edf8;
+  color: #3b5998;
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-copy:hover { background: #d0d9f0; }
+
+.btn-copy-result {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  background: #e8edf8;
+  color: #3b5998;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  text-align: center;
+}
+.btn-copy-result:hover { background: #d0d9f0; }
+
 /* ===== Error ===== */
 .error { color: #e74c3c; font-size: 0.88rem; margin: 6px 0; }
